@@ -14,6 +14,7 @@ class User(db.Model):
     username = db.Column(db.String(20),nullable=False,unique=True)
     emailid = db.Column(db.String(20),nullable=False,unique=True)
     password = db.Column(db.String(80),nullable=False)
+    todos = db.relationship('Todo', backref='user')
     
     def __repr__(self) -> str:
         return f"{self.id} - {self.username}"
@@ -24,14 +25,16 @@ class User(db.Model):
         self.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
     def check_password(self, password):
-        print(self.password)
-        print(password)
+        # print(self.password)
+        # print(password)
         return bcrypt.checkpw(password.encode('utf-8'), self.password)
+    
 class Todo(db.Model):
     sno = db.Column(db.Integer,primary_key=True)
     title = db.Column(db.String(200),nullable=True)
     desc = db.Column(db.String(500),nullable=True)
     date_created = db.Column(db.DateTime,default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 # db.create_all()
     
 # @app.route('/',methods=['GET','POST'])
@@ -41,20 +44,20 @@ class Todo(db.Model):
 @app.route('/',methods=['GET','POST'])
 def login():
     if request.method== 'POST':
-        username= request.form['username']
+        # username= request.form['username']
         emailid= request.form['emailid']
         password= request.form['password']
-        print(emailid)
+        # print(emailid)
         user=User.query.filter_by(emailid=emailid).first()
-        print(user)
+        # print(user)
 
         if user and user.check_password(password):
-            print(user)
-            print(user.check_password)
+            # print(user)
+            # print(user.check_password)
             session['loggedin']=True
-            session['username']=user.username
+            # session['username']=user.username
             session['emailid']=user.emailid
-            session['password']=user.password
+            session['user_id']=user.id
             return redirect("/dashboard")
         else:
             render_template('login.html',error="Invalid user")
@@ -66,6 +69,7 @@ def logout():
     session.pop('loggedin', None)
     session.pop('username', None)
     session.pop('emailid', None)
+    session.pop('user_id',None)
     return redirect('/')
 
 @app.route('/register',methods=['GET','POST'])
@@ -83,20 +87,27 @@ def register():
 
 @app.route('/dashboard',methods=['GET','POST'])
 def dashboard():
-    if 'loggedin' in session:    
-         return render_template('dashboard.html')   
+    if 'loggedin' in session:
+        return render_template('dashboard.html')   
     return redirect(url_for('login'))
 
 @app.route('/index',methods=['GET','POST'])
 def index():
-    if request.method== 'POST':
-        title=request.form['title']
-        desc=request.form['desc']
-        todo = Todo(title=title, desc=desc)
-        db.session.add(todo)
-        db.session.commit()
-    allTodo= Todo.query.all()
-    return render_template('index.html',allTodo=allTodo)
+    if 'loggedin' in session:
+        if request.method== 'POST':
+            title=request.form['title']
+            desc=request.form['desc']
+            user_id=session['user_id']
+            print(desc)
+            print(user_id)
+            todo = Todo(title=title, desc=desc,user_id=user_id)
+            db.session.add(todo)
+            db.session.commit()
+            # print(user_id)
+        allTodo = Todo.query.filter_by(user_id=session['user_id']).all()
+        # print(user_id)
+        return render_template('index.html',allTodo=allTodo)
+    return redirect(url_for('login'))
 
 @app.route('/update/<int:sno>',methods=['GET','POST'])
 def update(sno):
