@@ -9,8 +9,8 @@
               <input type="text" class="form-control" name="title" id="title" aria-describedby="emailHelp">            
             </div>
             <div class="mb-3">
-              <label for="desc" class="form-label">Todo Description</label>
-              <input type="text" class="form-control" name="desc" id="desc">
+              <label for="description" class="form-label">Todo Description</label>
+              <input type="text" class="form-control" name="description" id="description">
             </div>
             <button type="submit" class="btn btn-dark">Submit</button>
       </form>
@@ -25,7 +25,7 @@
           <table class="table">
             <thead>
               <tr>
-                <th scope="col">SNo</th>
+                <th scope="col">Serial No</th>
                 <th scope="col">Title</th>
                 <th scope="col">Description</th>
                 <th scope="col">Date</th>
@@ -37,10 +37,10 @@
                 <tr>
                     <th scope="row">{{loop.index}}</th>
                     <td>{{todo.title}}</td>
-                    <td>{{todo.desc}}</td>
+                    <td>{{todo.description}}</td>
                     <td>{{todo.date_created}}</td>
-                    <td><a href="/update/{{todo.sno}}" type="button" class="btn btn-success btn-sm mx-2">Update</button>
-                    <a href="/delete/{{todo.sno}}" type="button" class="btn btn-secondary btn-sm mx-2">Delete</button></td>
+                    <td><a href="/update/{{todo.serial_no}}" type="button" class="btn btn-success btn-sm mx-2">Update</button>
+                    <a href="/delete/{{todo.serial_no}}" type="button" class="btn btn-secondary btn-sm mx-2">Delete</button></td>
                   </tr>
                 {% endfor %}
         {% endif %}
