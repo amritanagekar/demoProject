@@ -8,6 +8,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///todo.db"
 app.config['SECRET_KEY']='secretkey'
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 db=SQLAlchemy(app)
 class User(db.Model):
     id = db.Column(db.Integer,primary_key=True)
@@ -25,37 +26,25 @@ class User(db.Model):
         self.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
     def check_password(self, password):
-        # print(self.password)
-        # print(password)
         return bcrypt.checkpw(password.encode('utf-8'), self.password)
     
 class Todo(db.Model):
-    sno = db.Column(db.Integer,primary_key=True)
+    serial_no = db.Column(db.Integer,primary_key=True)
     title = db.Column(db.String(200),nullable=True)
-    desc = db.Column(db.String(500),nullable=True)
+    description = db.Column(db.String(500),nullable=True)
     date_created = db.Column(db.DateTime,default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 # db.create_all()
     
-# @app.route('/',methods=['GET','POST'])
-# def home():
-#     return render_template('home.html')
-    
 @app.route('/',methods=['GET','POST'])
 def login():
     if request.method== 'POST':
-        # username= request.form['username']
         emailid= request.form['emailid']
         password= request.form['password']
-        # print(emailid)
         user=User.query.filter_by(emailid=emailid).first()
-        # print(user)
 
         if user and user.check_password(password):
-            # print(user)
-            # print(user.check_password)
             session['loggedin']=True
-            # session['username']=user.username
             session['emailid']=user.emailid
             session['user_id']=user.id
             return redirect("/dashboard")
@@ -96,42 +85,37 @@ def index():
     if 'loggedin' in session:
         if request.method== 'POST':
             title=request.form['title']
-            desc=request.form['desc']
+            description=request.form['description']
             user_id=session['user_id']
-            print(desc)
+            print(description)
             print(user_id)
-            todo = Todo(title=title, desc=desc,user_id=user_id)
+            todo = Todo(title=title, description=description,user_id=user_id)
             db.session.add(todo)
             db.session.commit()
-            # print(user_id)
         allTodo = Todo.query.filter_by(user_id=session['user_id']).all()
-        # print(user_id)
         return render_template('index.html',allTodo=allTodo)
     return redirect(url_for('login'))
 
-@app.route('/update/<int:sno>',methods=['GET','POST'])
-def update(sno):
-        if request.method== 'POST':
-           title=request.form['title']
-           desc=request.form['desc']
-           todo= Todo.query.filter_by(sno=sno).first()
-           todo.title= title
-           todo.desc=desc
-           db.session.add(todo)
-           db.session.commit()
-           return redirect("/index")
-        todo= Todo.query.filter_by(sno=sno).first()
-        return render_template('update.html',todo=todo)
+@app.route('/update/<int:serial_no>',methods=['GET','POST'])
+def update(serial_no):
+    if request.method== 'POST':
+        title=request.form['title']
+        description=request.form['description']
+        todo= Todo.query.filter_by(serial_no=serial_no).first()
+        todo.title= title
+        todo.description=description
+        db.session.add(todo)
+        db.session.commit()
+        return redirect("/index")
+    todo= Todo.query.filter_by(serial_no=serial_no).first()
+    return render_template('update.html',todo=todo)
 
-@app.route('/delete/<int:sno>')
-def delete(sno):
-    todo= Todo.query.filter_by(sno=sno).first()
+@app.route('/delete/<int:serial_no>')
+def delete(serial_no):
+    todo= Todo.query.filter_by(serial_no=serial_no).first()
     db.session.delete(todo)
     db.session.commit()
     return redirect('/index')
-
-# if __name__ == '__main__':
-    # app.run(debug=True,port=8000)
 
 if __name__ == '__main__':
     # This ensures that the database tables are created before running the app
