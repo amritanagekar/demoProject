@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 import bcrypt
 from dotenv import load_dotenv
 import os
+from models import db,User,Todo
 
 load_dotenv()
 
@@ -13,21 +14,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("SQLALCHEMY_DATABASE_URI")
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy(app)
-
-
-load_dotenv()
-
-from models import db, User,Todo
-
-app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("SQLALCHEMY_DATABASE_URI")
-app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 db.init_app(app)
-
-
-# db.create_all()
-
 
 @app.route("/", methods=["GET", "POST"])
 def login():
