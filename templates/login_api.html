@@ -22,19 +22,27 @@
             <label for="exampleInputPassword1" class="form-label">Password</label>
             <input type="password" class="form-control" id="exampleInputPassword1" name="password">
         </div>
-            <button type="button" class="btn btn-primary" onclick="submitLoginForm()">Submit</button>
+            <button type="button" class="btn btn-primary" id="submitBtn">Submit</button>
     </form>
   </div>
 
+ 
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
+    $(document).ready(function() {
+      $("#submitBtn").click(function() {
+        submitLoginForm();
+      });
+    });
+
     async function submitLoginForm() {
       const formData = new FormData(document.getElementById('loginForm'));
       const response = await fetch('/login_api', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: JSON.stringify(Object.fromEntries(formData))
+        body: new URLSearchParams(formData)
       });
 
       if (response.ok) {
@@ -45,5 +53,6 @@
       }
     }
   </script>
+
 </body>
 </html>
