@@ -1,0 +1,271 @@
+<!-- <!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Task To Do</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/index">Task ToDo</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Home</a>
+              </li>
+              <li class="nav-item"> {{session.name}}
+                <a href="{{ url_for('logout') }}" class="nav-link">
+                  <i class="nav-icon fas fa-th"></i>
+                  <p>
+                    Logout
+                  </p>
+                </a>
+              </li>
+            </ul>
+          </div>
+    </div>
+</nav>
+
+<div class="container my-3">
+  <h1>Todo App</h1>
+  
+  <h2>Create Todo</h2>
+  <input type="text" id="title" placeholder="Todo Title">
+  <input type="text" id="description" placeholder="Todo Description">
+  <button onclick="createTodo()">Create Todo</button>
+
+  <h2>Todos</h2>
+  <ul id="todoList"></ul>
+
+</div>
+
+  <script>
+async function fetchTodos() {
+  try {
+    const response = await fetch('/todos_api');
+    const todos = await response.json();
+    const todoList = document.getElementById('todoList');
+    todoList.innerHTML = '';
+
+    // const table = document.createElement('table');
+    // table.classList.add('table');
+
+    // const thead = document.createElement('thead');
+    // const headerRow = document.createElement('tr');
+    // const headers = ['Serial No', 'Title', 'Description', 'Date', 'Action'];
+
+    // headers.forEach(headerText => {
+    //   const th = document.createElement('th');
+    //   th.textContent = headerText;
+    //   headerRow.appendChild(th);
+    // });
+
+    // thead.appendChild(headerRow);
+    // table.appendChild(thead);
+
+    // const tbody = document.createElement('tbody');
+
+    // todos.forEach(todo => {
+    //   const row = document.createElement('tr');
+    //   const rowData = [
+    //     todo.serial_no,
+    //     todo.title,
+    //     todo.description,
+    //     todo.date_created,
+    //     `<a href="/update/${todo.serial_no}" type="button" class="btn btn-success btn-sm mx-2">Update</a>
+    //     <a href="/delete/${todo.serial_no}" type="button" class="btn btn-secondary btn-sm mx-2">Delete</a>`
+    //   ];
+
+    //   rowData.forEach(cellData => {
+    //     const cell = document.createElement('td');
+    //     cell.innerHTML = cellData;
+    //     row.appendChild(cell);
+    //   });
+
+    //   tbody.appendChild(row);
+    // });
+
+    // table.appendChild(tbody);
+    // todoList.appendChild(table);
+
+  } catch (error) {
+    console.error('Error fetching todos:', error);
+  }
+}
+
+async function createTodo() {
+    try {
+    const title = document.getElementById('title').value;
+    const description = document.getElementById('description').value;
+
+    const response = await fetch('/todos_api', {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ title, description })
+    });
+
+    if (response.ok) {
+        fetchTodos(); 
+        document.getElementById('title').value = ''; 
+        document.getElementById('description').value = '';
+    } else {
+        alert('Failed to create todo.');
+    }
+    } catch (error) {
+    console.error('Error creating todo:', error);
+    }
+}
+
+async function deleteTodo(serial_no) {
+    try {
+    const response = await fetch(`/todos_api/${serial_no}`, {
+        method: 'DELETE'
+    });
+
+    if (response.ok) {
+        fetchTodos(); 
+    } else {
+        alert('Failed to delete todo.');
+    }
+    } catch (error) {
+    console.error('Error deleting todo:', error);
+    }
+}
+
+    fetchTodos();
+  </script>
+</body>
+</html> -->
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Task To Do</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/index">Task ToDo</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Home</a>
+              </li>
+              <li class="nav-item"> {{session.name}}
+                <a href="{{ url_for('logout') }}" class="nav-link">
+                  <i class="nav-icon fas fa-th"></i>
+                  <p>
+                    Logout
+                  </p>
+                </a>
+              </li>
+            </ul>
+          </div>
+    </div>
+</nav>
+
+<div class="container my-3">
+  <h1>Todo App</h1>
+  
+  <h2>Create Todo</h2>
+  <input type="text" id="title" placeholder="Todo Title">
+  <input type="text" id="description" placeholder="Todo Description">
+  <button id="createTodoButton">Create a Todo</button>
+
+  <h2>Todos</h2>
+  <ul id="todoList"></ul>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+  fetchTodos();
+
+  $('#createTodoButton').click(function() {
+    createTodo();
+  });
+
+  $(document).on('click', '.deleteTodoBtn', function() {
+    const serial_no = $(this).data('serial_no');
+    deleteTodo(serial_no);
+  });
+});
+
+function fetchTodos() {
+  $.ajax({
+    url: '/todos_api',
+    method: 'GET',
+    success: function(response) {
+      display_Todos(response);
+    },
+    error: function(xhr, status, error) {
+      console.error('Error fetching the todos:', error);
+    }
+  });
+}
+
+function display_Todos(todos) {
+  const todoList = $('#todoList');
+  todoList.empty();
+
+  todos.forEach(function(todo) {
+    const todoItem = `
+      <li>
+        <strong>${todo.title}</strong>: ${todo.description}
+        <button class="btn btn-danger btn-sm deleteTodoBtn" data-serial_no="${todo.serial_no}">Delete</button>
+      </li>
+    `;
+    todoList.append(todoItem);
+  });
+}
+
+function createTodo() {
+  const title = $('#title').val();
+  const description = $('#description').val();
+
+  $.ajax({
+    url: '/todos_api',
+    method: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify({ title: title, description: description }),
+    success: function(response) {
+      fetchTodos(); 
+      $('#title, #description').val(''); 
+    },
+    error: function(xhr, status, error) {
+      console.error('Error creating a todo:', error);
+      alert('Failed to create todo.');
+    }
+  });
+}
+
+function deleteTodo(serial_no) {
+  $.ajax({
+    url: `/todos_api/${serial_no}`,
+    method: 'DELETE',
+    success: function(response) {
+      fetchTodos(); 
+    },
+    error: function(xhr, status, error) {
+      console.error('Error deleting todo:', error);
+      alert('Failed to delete todo.');
+    }
+  });
+}
+</script>
+</body>
+</html>
