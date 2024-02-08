@@ -53,15 +53,12 @@ def login_api():
 @app.route("/logout_api", methods=["GET", "POST"])
 def logout_api():
     session.pop("loggedin", None)
-    session.pop("emailid", None)
     session.pop("user_id", None)
     return jsonify({"message": "Logout successful."}), 200
 
 @app.route("/logout")
 def logout():
     session.pop("loggedin", None)
-    session.pop("username", None)
-    session.pop("emailid", None)
     session.pop("user_id", None)
     return redirect("/")
 
